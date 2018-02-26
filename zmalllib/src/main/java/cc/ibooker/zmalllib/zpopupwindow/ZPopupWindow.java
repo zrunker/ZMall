@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib;
+package cc.ibooker.zmalllib.zpopupwindow;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import cc.ibooker.zmalllib.ZPopupWindowUtil;
+import cc.ibooker.zmalllib.R;
 
 /**
  * 自定义弹出的PopupWindow，增加半透明蒙层。

@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib;
+package cc.ibooker.zmalllib.zflowlayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
