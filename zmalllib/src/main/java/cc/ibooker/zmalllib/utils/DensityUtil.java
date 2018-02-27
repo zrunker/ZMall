@@ -55,9 +55,8 @@ public class DensityUtil {
     public static int getDialogW(Context aty) {
         DisplayMetrics dm = new DisplayMetrics();
         dm = aty.getResources().getDisplayMetrics();
-        int w = dm.widthPixels - 100;
         // int w = aty.getWindowManager().getDefaultDisplay().getWidth() - 100;
-        return w;
+        return dm.widthPixels - 100;
     }
 
     /**
@@ -66,9 +65,8 @@ public class DensityUtil {
     public static int getScreenW(Context aty) {
         DisplayMetrics dm = new DisplayMetrics();
         dm = aty.getResources().getDisplayMetrics();
-        int w = dm.widthPixels;
         // int w = aty.getWindowManager().getDefaultDisplay().getWidth();
-        return w;
+        return dm.widthPixels;
     }
 
     /**
@@ -90,6 +88,7 @@ public class DensityUtil {
     /**
      * 获得状态栏的高度
      */
+    @SuppressLint("PrivateApi")
     public static int getStatusHeight(Context context) {
         int statusHeight = -1;
         try {
@@ -109,7 +108,7 @@ public class DensityUtil {
             p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
-        int childWidthSpec = ViewGroup.getChildMeasureSpec(0, 0 + 0, p.width);
+        int childWidthSpec = ViewGroup.getChildMeasureSpec(0, 0, p.width);
         int lpHeight = p.height;
         int childHeightSpec;
         if (lpHeight > 0) {
@@ -170,32 +169,35 @@ public class DensityUtil {
     /**
      * 获取屏幕的宽度
      *
-     * @param context
-     * @return
+     * @param context 上下文对象
      */
     public static int getScreenWidth(Context context) {
-        WindowManager manager = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        return display.getWidth();
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = null;
+        if (manager != null) {
+            display = manager.getDefaultDisplay();
+            return display.getWidth();
+        }
+        return 0;
     }
 
     /**
      * 获取屏幕的高度
      *
-     * @param context
-     * @return
+     * @param context 上下文对象
      */
     public static int getScreenHeight(Context context) {
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        return display.getHeight();
+        Display display = null;
+        if (manager != null) {
+            display = manager.getDefaultDisplay();
+            return display.getHeight();
+        }
+        return 0;
     }
 
     /**
      * 获取屏幕中控件顶部位置的高度--即控件顶部的Y点
-     *
-     * @return
      */
     public static int getScreenViewTopHeight(View view) {
         return view.getTop();
@@ -203,8 +205,6 @@ public class DensityUtil {
 
     /**
      * 获取屏幕中控件底部位置的高度--即控件底部的Y点
-     *
-     * @return
      */
     public static int getScreenViewBottomHeight(View view) {
         return view.getBottom();
@@ -212,8 +212,6 @@ public class DensityUtil {
 
     /**
      * 获取屏幕中控件左侧的位置--即控件左侧的X点
-     *
-     * @return
      */
     public static int getScreenViewLeftHeight(View view) {
         return view.getLeft();
@@ -221,8 +219,6 @@ public class DensityUtil {
 
     /**
      * 获取屏幕中控件右侧的位置--即控件右侧的X点
-     *
-     * @return
      */
     public static int getScreenViewRightHeight(View view) {
         return view.getRight();
