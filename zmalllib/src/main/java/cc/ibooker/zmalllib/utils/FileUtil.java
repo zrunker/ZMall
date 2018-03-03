@@ -1,7 +1,11 @@
 package cc.ibooker.zmalllib.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +13,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import cc.ibooker.zmalllib.bean.FileInfoBean;
 
 /**
  * 文件管理类-增删改查，需要添加三个权限 WRITE_EXTERNAL_STORAGE、READ_EXTERNAL_STORAGE、MOUNT_UNMOUNT_FILESYSTEMS
@@ -190,7 +198,7 @@ public class FileUtil {
     }
 
     /**
-     * 复制单个文件（复制文件内容）
+     * 复制单个文件（复制文件内容）-子线程
      *
      * @param oldPath String 原文件路径 如：c:/fqf.txt
      * @param newPath String 复制后路径 如：f:/fqf.txt
@@ -215,7 +223,7 @@ public class FileUtil {
     }
 
     /**
-     * 复制整个文件夹内容
+     * 复制整个文件夹内容-子线程
      *
      * @param oldPath String 原文件路径 如：c:/fqf
      * @param newPath String 复制后路径 如：f:/fqf/ff
@@ -223,36 +231,41 @@ public class FileUtil {
     public static void copyFolder(String oldPath, String newPath) {
         try {
             File newFile = new File(newPath);
-            if (!newFile.exists())// 如果文件夹不存在 则建立新文件夹
-                newFile.mkdirs();
-            File oldFile = new File(oldPath);
-            String[] files = oldFile.list();
-            File temp;
-            for (int i = 0; i < files.length; i++) {
-                if (oldPath.endsWith(File.separator)) {
-                    temp = new File(oldPath + files[i]);
-                } else {
-                    temp = new File(oldPath + File.separator + files[i]);
-                }
-                if (temp.isFile()) {
-                    FileInputStream input = new FileInputStream(temp);
-                    FileOutputStream output = new FileOutputStream(newPath + File.separator + temp.getName());
-                    byte[] b = new byte[1024 * 5];
-                    int len;
-                    while ((len = input.read(b)) != -1) {
-                        output.write(b, 0, len);
+            boolean bool = newFile.exists();
+            if (!bool) {// 如果文件夹不存在 则建立新文件夹
+                bool = newFile.mkdirs();
+            }
+            if (bool) {
+                File oldFile = new File(oldPath);
+                String[] files = oldFile.list();
+                File temp;
+                for (String file : files) {
+                    if (oldPath.endsWith(File.separator)) {
+                        temp = new File(oldPath + file);
+                    } else {
+                        temp = new File(oldPath + File.separator + file);
                     }
-                    output.flush();
-                    output.close();
-                    input.close();
-                }
-                if (temp.isDirectory()) {// 如果是子文件夹
-                    copyFolder(oldPath + File.separator + files[i], newPath + File.separator + files[i]);
+                    if (temp.isFile()) {
+                        FileInputStream input = new FileInputStream(temp);
+                        FileOutputStream output = new FileOutputStream(newPath + File.separator + temp.getName());
+                        byte[] b = new byte[1024 * 5];
+                        int len;
+                        while ((len = input.read(b)) != -1) {
+                            output.write(b, 0, len);
+                        }
+                        output.flush();
+                        output.close();
+                        input.close();
+                    }
+                    if (temp.isDirectory()) {// 如果是子文件夹
+                        copyFolder(oldPath + File.separator + file, newPath + File.separator + file);
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -319,13 +332,21 @@ public class FileUtil {
      */
     public static long getFileSize(File file) {
         long size = 0;
+        FileInputStream fis = null;
         try {
-            if (file.exists()) {
-                FileInputStream fis = new FileInputStream(file);
+            if (file.exists() && file.isFile()) {
+                fis = new FileInputStream(file);
                 size = fis.available();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null)
+                    fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return size;
     }
@@ -339,14 +360,15 @@ public class FileUtil {
         long size = 0;
         try {
             if (files.exists()) {
-                File fList[] = files.listFiles();
-                for (File file : fList) {
-                    if (file.isDirectory()) {
-                        size = size + getFileSizes(file);
-                    } else {
-                        size = size + getFileSize(file);
+                File[] fList = files.listFiles();
+                if (fList != null)
+                    for (File file : fList) {
+                        if (file.isDirectory()) {
+                            size = size + getFileSizes(file);
+                        } else {
+                            size = size + getFileSize(file);
+                        }
                     }
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -469,8 +491,8 @@ public class FileUtil {
      *
      * @param context 上下文对象
      */
-    public static void cleanSharedPreference(Context context) {
-        deleteDir(new File(File.separator + "data" + File.separator + "data" + File.separator + context.getPackageName() + File.separator + "sharedprefs").getAbsolutePath());
+    public static Boolean cleanSharedPreference(Context context) {
+        return deleteDir(new File(File.separator + "data" + File.separator + "data" + File.separator + context.getPackageName() + File.separator + "sharedprefs").getAbsolutePath());
     }
 
     /**
@@ -479,7 +501,76 @@ public class FileUtil {
      * @param context 上下文对象
      * @param dbName  数据库名
      */
-    public static void delDatabaseByName(Context context, String dbName) {
-        context.deleteDatabase(dbName);
+    public static Boolean delDatabaseByName(Context context, String dbName) {
+        return context.deleteDatabase(dbName);
+    }
+
+    /**
+     * 打开指定文件
+     *
+     * @param file 指定文件
+     */
+    public static void openFile(Context context, File file) {
+        if (file.exists()) {
+            // 获取文件路径
+            String filePath = file.getAbsolutePath();
+            // 获取文件后缀
+            String suffix = filePath.substring(filePath.lastIndexOf('.')).toLowerCase(Locale.US);
+            try {
+                // 获取MIME映射信息
+                MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+                String temp = suffix.substring(1);
+                String mime = mimeTypeMap.getMimeTypeFromExtension(temp);
+
+                // 打开文件
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file), mime);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "无法打开后缀名为." + suffix + "的文件！", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * 获取目录下所有文件
+     *
+     * @param path 路径
+     */
+    public static File[] getFiles(String path) {
+        File file = new File(path);
+        return file.listFiles();
+    }
+
+    /**
+     * 获取文件目录下文件信息
+     *
+     * @param path 路径
+     */
+    public static ArrayList<FileInfoBean> getFileInfos(String path) {
+        ArrayList<FileInfoBean> fileInfoBeans = new ArrayList<>();
+        // 获取文件
+        File files = new File(path);
+        if (files.exists()) {
+            // 获取文件目录
+            File[] fileList = files.listFiles();
+            // 判断文件是否为目录文件
+            if (files.isDirectory() && fileList != null) {
+                for (File file1 : fileList) {
+                    String fileName = file1.getName();
+                    String filePath = file1.getAbsolutePath();
+                    long fileSize = getFileSizes(file1);
+                    fileInfoBeans.add(new FileInfoBean(fileName, filePath, fileSize));
+                }
+            } else {// 非目录 或者 空目录
+                String fileName = files.getName();
+                String filePath = files.getAbsolutePath();
+                long fileSize = getFileSizes(files);
+                fileInfoBeans.add(new FileInfoBean(fileName, filePath, fileSize));
+            }
+        }
+        return fileInfoBeans;
     }
 }
