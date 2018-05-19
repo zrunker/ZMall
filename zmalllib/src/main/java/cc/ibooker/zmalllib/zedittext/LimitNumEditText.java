@@ -24,7 +24,7 @@ public class LimitNumEditText extends LinearLayout {
     private Context context;
     private EditText editText;
     private TextView textView;
-    private LinearLayout.LayoutParams layoutParams;
+    private LayoutParams layoutParams;
     private int maxWordsNum = 0;// 默认为0
 
     public LimitNumEditText(Context context) {
@@ -43,7 +43,7 @@ public class LimitNumEditText extends LinearLayout {
 
     // 初始化
     private void init() {
-        layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         this.setOrientation(LinearLayout.VERTICAL);
         this.setBackgroundResource(R.drawable.bg_limitnum_edittext);
