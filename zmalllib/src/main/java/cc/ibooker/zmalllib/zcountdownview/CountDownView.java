@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import cc.ibooker.zmalllib.R;
 import cc.ibooker.zmalllib.utils.StringUtil;
 
+
 /**
  * 自定义倒计时View
  * Created by 邹峰立 on 2018/1/15.
@@ -1072,6 +1073,18 @@ public class CountDownView extends LinearLayout {
     public CountDownView stopCountDown() {
         this.timeStamp = 0;
         return this;
+    }
+
+    /**
+     * 销毁
+     */
+    public void destoryCountDownView() {
+        if (mExecutorService != null)
+            mExecutorService.shutdownNow();
+        if (myHandler != null) {
+            myHandler.removeCallbacksAndMessages(null);
+            myHandler = null;
+        }
     }
 
     /**
