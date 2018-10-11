@@ -133,6 +133,23 @@ public class TipDialog {
     }
 
     /**
+     * 修改主题文字高度
+     *
+     * @param height px 高度
+     */
+    public TipDialog setTitleHeight(int height) {
+        try {
+            if (titleTv != null && height > 0) {
+                titleTv.setHeight(height);
+                titleTv.invalidate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    /**
      * 修改主题是否显示
      *
      * @param visible true显示  false不显示 默认显示
@@ -200,6 +217,19 @@ public class TipDialog {
     }
 
     /**
+     * 修改描述高度
+     *
+     * @param height px 高度
+     */
+    public TipDialog setDescHeight(int height) {
+        if (descTv != null && height > 0) {
+            descTv.setHeight(height);
+            descTv.invalidate();
+        }
+        return this;
+    }
+
+    /**
      * 修改确定文字
      *
      * @param text 文字内容
@@ -243,6 +273,19 @@ public class TipDialog {
     }
 
     /**
+     * 修改确定文字高度
+     *
+     * @param height px 高度
+     */
+    public TipDialog setEnsureHeight(int height) {
+        if (ensureTv != null && height > 0) {
+            ensureTv.setHeight(height);
+            ensureTv.invalidate();
+        }
+        return this;
+    }
+
+    /**
      * 修改取消文字
      *
      * @param text 文字内容
@@ -281,6 +324,19 @@ public class TipDialog {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return this;
+    }
+
+    /**
+     * 修改取消文字高度
+     *
+     * @param height px 高度
+     */
+    public TipDialog setCancelHeight(int height) {
+        if (cancelTv != null && height > 0) {
+            cancelTv.setHeight(height);
+            cancelTv.invalidate();
         }
         return this;
     }
@@ -421,7 +477,9 @@ public class TipDialog {
     private int getScreenH(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+        }
         return outMetrics.heightPixels;
     }
 
