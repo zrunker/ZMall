@@ -50,6 +50,10 @@ public class DecoratorLayout<T> extends FrameLayout {
         ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
     }
 
+    public DecoratorViewPager getDecoratorViewPager() {
+        return decoratorViewPager;
+    }
+
     public DecoratorLayout(Context context) {
         this(context, null);
     }
@@ -230,6 +234,21 @@ public class DecoratorLayout<T> extends FrameLayout {
         return this;
     }
 
+    // 销毁
+    public DecoratorLayout destory() {
+        stop();
+        if (vPagerHandler != null) {
+            vPagerHandler.removeCallbacksAndMessages(null);
+            vPagerHandler = null;
+        }
+        return this;
+    }
+
+    // 判断线程是否继续
+    public boolean isContinue() {
+        return isContinue && !executorService.isTerminated() && !executorService.isShutdown();
+    }
+
     /**
      * 设置ViewPager点击事件
      *
@@ -249,8 +268,10 @@ public class DecoratorLayout<T> extends FrameLayout {
         public void run() {
             while (isContinue) {
                 synchronized (VpThread.class) {
-                    vPagerHandler.sendEmptyMessage(what.get());
-                    whatOption();
+                    if (vPagerHandler != null) {
+                        vPagerHandler.sendEmptyMessage(what.get());
+                        whatOption();
+                    }
                 }
             }
         }

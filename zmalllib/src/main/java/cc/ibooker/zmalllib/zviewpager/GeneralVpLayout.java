@@ -49,6 +49,10 @@ public class GeneralVpLayout<T> extends FrameLayout {
         ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
     }
 
+    public GeneralViewPager getGeneralViewPager() {
+        return generalViewPager;
+    }
+
     public GeneralVpLayout(Context context) {
         this(context, null);
     }
@@ -214,8 +218,34 @@ public class GeneralVpLayout<T> extends FrameLayout {
      */
     public GeneralVpLayout setScrollble(boolean scrollble) {
         if (generalViewPager != null)
-            generalViewPager.setScrollble(scrollble);
+            generalViewPager.setCanScroll(scrollble);
         return this;
+    }
+
+    /**
+     * 解决滑动冲突 ListView ScrollView SwipeRefreshLayout
+     *
+     * @param parent 父控件
+     */
+    public GeneralVpLayout setViewPagerParent(ViewGroup parent) {
+        if (generalViewPager != null)
+            generalViewPager.setViewPagerParent(parent);
+        return this;
+    }
+
+    // 销毁
+    public GeneralVpLayout destory() {
+        stop();
+        if (vPagerHandler != null) {
+            vPagerHandler.removeCallbacksAndMessages(null);
+            vPagerHandler = null;
+        }
+        return this;
+    }
+
+    // 判断线程是否继续
+    public boolean isContinue() {
+        return isContinue && !executorService.isTerminated() && !executorService.isShutdown();
     }
 
     /**
@@ -237,8 +267,10 @@ public class GeneralVpLayout<T> extends FrameLayout {
         public void run() {
             while (isContinue) {
                 synchronized (VpThread.class) {
-                    vPagerHandler.sendEmptyMessage(what.get());
-                    whatOption();
+                    if (vPagerHandler != null) {
+                        vPagerHandler.sendEmptyMessage(what.get());
+                        whatOption();
+                    }
                 }
             }
         }

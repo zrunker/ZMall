@@ -50,6 +50,10 @@ public class ChirdHeightAutoLayout<T> extends FrameLayout {
         ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
     }
 
+    public ChirdHeightAutoViewPager getChirdMaxHeightViewPager() {
+        return chirdMaxHeightViewPager;
+    }
+
     public ChirdHeightAutoLayout(Context context) {
         this(context, null);
     }
@@ -215,8 +219,34 @@ public class ChirdHeightAutoLayout<T> extends FrameLayout {
      */
     public ChirdHeightAutoLayout setScrollble(boolean scrollble) {
         if (chirdMaxHeightViewPager != null)
-            chirdMaxHeightViewPager.setScrollble(scrollble);
+            chirdMaxHeightViewPager.setCanScroll(scrollble);
         return this;
+    }
+
+    /**
+     * 解决滑动冲突 ListView ScrollView SwipeRefreshLayout
+     *
+     * @param parent 父控件
+     */
+    public ChirdHeightAutoLayout setViewPagerParent(ViewGroup parent) {
+        if (chirdMaxHeightViewPager != null)
+            chirdMaxHeightViewPager.setViewPagerParent(parent);
+        return this;
+    }
+
+    // 销毁
+    public ChirdHeightAutoLayout destory() {
+        stop();
+        if (vPagerHandler != null) {
+            vPagerHandler.removeCallbacksAndMessages(null);
+            vPagerHandler = null;
+        }
+        return this;
+    }
+
+    // 判断线程是否继续
+    public boolean isContinue() {
+        return isContinue && !executorService.isTerminated() && !executorService.isShutdown();
     }
 
     /**
@@ -238,8 +268,10 @@ public class ChirdHeightAutoLayout<T> extends FrameLayout {
         public void run() {
             while (isContinue) {
                 synchronized (VpThread.class) {
-                    vPagerHandler.sendEmptyMessage(what.get());
-                    whatOption();
+                    if (vPagerHandler != null) {
+                        vPagerHandler.sendEmptyMessage(what.get());
+                        whatOption();
+                    }
                 }
             }
         }
