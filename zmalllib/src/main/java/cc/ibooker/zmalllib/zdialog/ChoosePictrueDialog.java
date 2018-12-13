@@ -32,7 +32,27 @@ public class ChoosePictrueDialog {
     private Button localBtn, photoBtn, cancelBtn;
 
     public enum ChoosePictrueDialogGravity {
-        GRAVITY_BOTTOM, GRAVITY_CENTER, GRAVITY_LEFT, GRAVITY_RIGHT, GRAVITY_TOP
+        GRAVITY_BOTTOM,
+        GRAVITY_CENTER,
+        GRAVITY_LEFT,
+        GRAVITY_RIGHT,
+        GRAVITY_TOP
+    }
+
+    public Dialog getDialog() {
+        return dialog;
+    }
+
+    public Button getLocalBtn() {
+        return localBtn;
+    }
+
+    public Button getPhotoBtn() {
+        return photoBtn;
+    }
+
+    public Button getCancelBtn() {
+        return cancelBtn;
     }
 
     public ChoosePictrueDialog(@NonNull Context context) {
@@ -51,7 +71,7 @@ public class ChoosePictrueDialog {
      */
     private void init() {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_choose_pictrue, null);
-        localBtn = (Button) view.findViewById(R.id.btn_local);
+        localBtn = view.findViewById(R.id.btn_local);
         localBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +86,7 @@ public class ChoosePictrueDialog {
                 }
             }
         });
-        photoBtn = (Button) view.findViewById(R.id.btn_photo);
+        photoBtn = view.findViewById(R.id.btn_photo);
         photoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +96,7 @@ public class ChoosePictrueDialog {
                 startPhoto();
             }
         });
-        cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
+        cancelBtn = view.findViewById(R.id.btn_cancel);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +118,11 @@ public class ChoosePictrueDialog {
         this.setChoosePictrueDialogGravity(ChoosePictrueDialogGravity.GRAVITY_CENTER);
         // 设置宽度
         this.setChoosePictrueDialogWidth(75);
+    }
+
+    // 是否展示
+    public boolean isShowing() {
+        return dialog != null && dialog.isShowing();
     }
 
     // 启动拍照
@@ -126,6 +151,25 @@ public class ChoosePictrueDialog {
                 }
             }
         }
+    }
+
+    /**
+     * 设置三个按钮的字体颜色
+     *
+     * @param pixels 待设置高度px
+     */
+    public ChoosePictrueDialog setBtnHeight(int pixels) {
+        try {
+            localBtn.getLayoutParams().height = pixels;
+            photoBtn.getLayoutParams().height = pixels;
+            cancelBtn.getLayoutParams().height = pixels;
+//            localBtn.setHeight(pixels);
+//            photoBtn.setHeight(pixels);
+//            cancelBtn.setHeight(pixels);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
     }
 
     /**

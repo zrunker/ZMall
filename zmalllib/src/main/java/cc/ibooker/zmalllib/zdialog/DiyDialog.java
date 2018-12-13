@@ -29,6 +29,10 @@ public class DiyDialog {
         GRAVITY_BOTTOM
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
     public DiyDialog(@NonNull Context context, @NonNull View view) {
         this(context, R.style.diydialog, view);
     }
@@ -52,6 +56,11 @@ public class DiyDialog {
         this.setDimAmount(0.2f);
         // 设置默认居中显示
         this.setDiyDialogGravity(DiyDialogGravity.GRAVITY_CENTER);
+    }
+
+    // 是否展示
+    public boolean isShowing() {
+        return dialog != null && dialog.isShowing();
     }
 
     /**
@@ -221,7 +230,9 @@ public class DiyDialog {
     private int getScreenH(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+        }
         return outMetrics.heightPixels;
     }
 

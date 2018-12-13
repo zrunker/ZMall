@@ -33,6 +33,18 @@ public class DelDialog {
         GRAVITY_BOTTOM
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
+    public Button getDelBtn() {
+        return delBtn;
+    }
+
+    public Button getCancelBtn() {
+        return cancelBtn;
+    }
+
     public DelDialog(@NonNull Context context) {
         this(context, R.style.diydialog);
     }
@@ -48,7 +60,7 @@ public class DelDialog {
      */
     private void init() {
         dialog.setContentView(R.layout.layout_del_dialog);
-        delBtn = (Button) dialog.findViewById(R.id.btn_del);
+        delBtn = dialog.findViewById(R.id.btn_del);
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +71,7 @@ public class DelDialog {
                     onDelListener.onDel();
             }
         });
-        cancelBtn = (Button) dialog.findViewById(R.id.btn_cancel);
+        cancelBtn = dialog.findViewById(R.id.btn_cancel);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +93,11 @@ public class DelDialog {
         this.setDelDialogGravity(DelDialogGravity.GRAVITY_CENTER);
         // 设置和屏幕的宽度比
         this.setDelDialogWidth(60);
+    }
+
+    // 是否展示
+    public boolean isShowing() {
+        return dialog != null && dialog.isShowing();
     }
 
     /**
@@ -292,7 +309,9 @@ public class DelDialog {
     private int getScreenH(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+        }
         return outMetrics.heightPixels;
     }
 
