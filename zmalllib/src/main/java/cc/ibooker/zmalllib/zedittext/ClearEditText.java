@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import cc.ibooker.zmalllib.R;
 
@@ -69,8 +68,21 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
         addTextChangedListener(this);
     }
 
-    public Drawable getmClearDrawable() {
+    public Drawable getClearDrawable() {
         return mClearDrawable;
+    }
+
+    public void setClearDrawable(Drawable mClearDrawable) {
+        this.mClearDrawable = mClearDrawable;
+    }
+
+    public int getClearRes() {
+        return clearRes;
+    }
+
+    public void setClearRes(int clearRes) {
+        this.clearRes = clearRes;
+        init();
     }
 
     // 焦点改变事件
