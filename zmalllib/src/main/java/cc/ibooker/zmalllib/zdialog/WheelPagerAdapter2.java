@@ -1,5 +1,6 @@
-package cc.ibooker.zmalllib.zviewpager;
+package cc.ibooker.zmalllib.zdialog;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,71 +9,42 @@ import android.view.ViewParent;
 import java.util.List;
 
 /**
- * ChirdHeightAutoViewPager的Adapter文件
- * Created by 邹峰立 on 2017/7/3.
+ * 轮播适配器
+ *
+ * @author 邹峰立
  */
-public class ChirdHeightAutoAdapter<T> extends PagerAdapter {
-    private int MULTIPLE_COUNT = 200;// 将Count扩大200倍实现无限滑动轮播
+public class WheelPagerAdapter2<T> extends PagerAdapter {
     private List<T> mDatas;
     private HolderCreator holderCreator;
 
-    public ChirdHeightAutoAdapter(HolderCreator holderCreator, List<T> list, boolean isOpenInfiniteWheel) {
+    public WheelPagerAdapter2(HolderCreator holderCreator, List<T> list) {
         this.holderCreator = holderCreator;
         this.mDatas = list;
-        if (!isOpenInfiniteWheel)
-            MULTIPLE_COUNT = 1;
     }
 
-    // 刷新数据
-    public void reflushData(HolderCreator holderCreator, List<T> list, boolean isOpenInfiniteWheel) {
+    public void reflushData(HolderCreator holderCreator, List<T> list) {
         this.holderCreator = holderCreator;
         this.mDatas = list;
-        if (!isOpenInfiniteWheel)
-            MULTIPLE_COUNT = 1;
         this.notifyDataSetChanged();
-    }
-
-    public void reflushData(boolean isOpenInfiniteWheel) {
-        if (!isOpenInfiniteWheel)
-            MULTIPLE_COUNT = 1;
-        this.notifyDataSetChanged();
-    }
-
-    // 计算真正的Position，无效循环
-    public int toRealPosition(int position) {
-        int realCount = getRealCount();
-        if (realCount == 0)
-            return 0;
-        return position % realCount;
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = (View) object;
-        container.removeView(view);
     }
 
     @Override
     public int getCount() {
-        return getRealCount() * MULTIPLE_COUNT;
+        return mDatas.size();
     }
 
-    public int getRealCount() {
-        return mDatas == null ? 0 : mDatas.size();
-    }
-
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        final int realPosition = toRealPosition(position);
-        View view = getView(realPosition, null, container);
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        View view = getView(position, null, container);
         if (view != null) {// 控件点击事件
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (ZViewPagerClickUtil.isFastClick())
+                    if (ZDialogClickUtil.isFastClick())
                         return;
                     if (onItemClickListener != null)
-                        onItemClickListener.onItemClickListener(realPosition);
+                        onItemClickListener.onItemClickListener(position);
                 }
             });
         }
@@ -89,8 +61,14 @@ public class ChirdHeightAutoAdapter<T> extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+//        super.destroyItem(container, position, object);
+        container.removeView((View) object);
+    }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+        return view == o;
     }
 
     // 获取View
@@ -104,7 +82,7 @@ public class ChirdHeightAutoAdapter<T> extends PagerAdapter {
             holder = (Holder<T>) view.getTag();
         }
         if (mDatas != null && !mDatas.isEmpty())
-            holder.UpdateUI(container.getContext(), position, mDatas.get(position));
+            holder.updateUI(container.getContext(), position, mDatas.get(position));
         return view;
     }
 
@@ -114,5 +92,4 @@ public class ChirdHeightAutoAdapter<T> extends PagerAdapter {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-
 }
