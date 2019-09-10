@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import cc.ibooker.zmalllib.R;
-
 /**
  * 选择图片Dialog
  * Created by 邹峰立 on 2017/7/10.
+ * https://github.com/zrunker/ZDialog
  */
 public class ChoosePictrueDialog {
     private Context context;
@@ -56,7 +56,7 @@ public class ChoosePictrueDialog {
     }
 
     public ChoosePictrueDialog(@NonNull Context context) {
-        this(context, R.style.diydialog);
+        this(context, R.style.zdialog_diyDialog);
         this.context = context;
     }
 
@@ -70,7 +70,7 @@ public class ChoosePictrueDialog {
      * 初始化
      */
     private void init() {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_choose_pictrue, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.zdialog_layout_choose_pictrue, null);
         localBtn = view.findViewById(R.id.btn_local);
         localBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +154,7 @@ public class ChoosePictrueDialog {
     }
 
     /**
-     * 设置三个按钮的字体颜色
+     * 设置三个按钮的高度
      *
      * @param pixels 待设置高度px
      */
@@ -194,9 +194,9 @@ public class ChoosePictrueDialog {
      * @param size 字体大小值
      */
     public ChoosePictrueDialog setBtnSize(float size) {
-        localBtn.setTextSize(size);
-        photoBtn.setTextSize(size);
-        cancelBtn.setTextSize(size);
+        localBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        photoBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        cancelBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
@@ -248,7 +248,7 @@ public class ChoosePictrueDialog {
      * @param size 字体大小
      */
     public ChoosePictrueDialog setLocalBtnSize(float size) {
-        localBtn.setTextSize(size);
+        localBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
@@ -258,7 +258,7 @@ public class ChoosePictrueDialog {
      * @param size 字体大小
      */
     public ChoosePictrueDialog setPhotoBtnSize(float size) {
-        photoBtn.setTextSize(size);
+        photoBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
@@ -268,7 +268,7 @@ public class ChoosePictrueDialog {
      * @param size 字体大小
      */
     public ChoosePictrueDialog setCancelBtnSize(float size) {
-        cancelBtn.setTextSize(size);
+        cancelBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
@@ -277,7 +277,7 @@ public class ChoosePictrueDialog {
      *
      * @param text 文本信息
      */
-    public ChoosePictrueDialog setLocalBtnText(String text) {
+    public ChoosePictrueDialog setLocalBtnText(CharSequence text) {
         if (!TextUtils.isEmpty(text))
             localBtn.setText(text);
         return this;
@@ -288,7 +288,7 @@ public class ChoosePictrueDialog {
      *
      * @param text 文本信息
      */
-    public ChoosePictrueDialog setPhotoBtnText(String text) {
+    public ChoosePictrueDialog setPhotoBtnText(CharSequence text) {
         if (!TextUtils.isEmpty(text))
             photoBtn.setText(text);
         return this;
@@ -299,7 +299,7 @@ public class ChoosePictrueDialog {
      *
      * @param text 文本信息
      */
-    public ChoosePictrueDialog setCancelBtnText(String text) {
+    public ChoosePictrueDialog setCancelBtnText(CharSequence text) {
         if (!TextUtils.isEmpty(text))
             cancelBtn.setText(text);
         return this;

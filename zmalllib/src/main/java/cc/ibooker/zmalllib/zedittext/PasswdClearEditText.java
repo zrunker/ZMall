@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib.zedittext;
+package cc.ibooker.zedittextlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import cc.ibooker.zmalllib.R;
 
 /**
  * 带有清空按钮的密码输入框
@@ -94,7 +92,7 @@ public class PasswdClearEditText extends FrameLayout {
             imageView.setImageResource(drawableId);
         // 执行点击事件-隐藏或显示
         if (isOpen)
-            clearEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            clearEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         else
             clearEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         // 设置光标位置

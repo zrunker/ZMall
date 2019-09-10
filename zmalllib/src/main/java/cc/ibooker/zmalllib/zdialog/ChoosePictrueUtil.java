@@ -12,11 +12,10 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import cc.ibooker.zmalllib.BuildConfig;
-
 /**
  * 选择图片管理类
  * Created by 邹峰立 on 2017/7/10.
+ * https://github.com/zrunker/ZDialog
  */
 public class ChoosePictrueUtil {
     public static Uri photoUri;// 拍照URI，拍照相对于新生产的，所有要进行转换
@@ -73,7 +72,7 @@ public class ChoosePictrueUtil {
                     Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     // 判断是否是AndroidN以及更高的版本
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        photoUri = ZFileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", imgFile);
+                        photoUri = ZFileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".ZFileProvider", imgFile);
                         // 添加权限
                         openCameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else

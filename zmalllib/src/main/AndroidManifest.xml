@@ -24,7 +24,7 @@
         <!--Android7.0+用于访问外部文件 -->
         <provider
             android:name=".zdialog.ZFileProvider"
-            android:authorities="${applicationId}.fileProvider"
+            android:authorities="${applicationId}.ZFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -8,17 +8,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import cc.ibooker.zmalllib.R;
-
 /**
  * 删除Dialog
  * Created by 邹峰立 on 2017/7/5.
+ * https://github.com/zrunker/ZDialog
  */
 public class DelDialog {
     private Context context;
@@ -46,7 +46,7 @@ public class DelDialog {
     }
 
     public DelDialog(@NonNull Context context) {
-        this(context, R.style.diydialog);
+        this(context, R.style.zdialog_diyDialog);
     }
 
     public DelDialog(@NonNull Context context, @StyleRes int themeResId) {
@@ -59,7 +59,7 @@ public class DelDialog {
      * 初始化控件
      */
     private void init() {
-        dialog.setContentView(R.layout.layout_del_dialog);
+        dialog.setContentView(R.layout.zdialog_layout_del_dialog);
         delBtn = dialog.findViewById(R.id.btn_del);
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class DelDialog {
      */
     public DelDialog setDelBtnSize(float size) {
         if (delBtn != null)
-            delBtn.setTextSize(size);
+            delBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
@@ -133,14 +133,14 @@ public class DelDialog {
      */
     public DelDialog setCancelBtnSize(float size) {
         if (cancelBtn != null)
-            cancelBtn.setTextSize(size);
+            cancelBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return this;
     }
 
     /**
      * 设置CancelBtn文字颜色
      *
-     * @param color 文字颜色
+     * @param color 文字颜色 16进制
      */
     public DelDialog setCancelBtnColor(String color) {
         try {

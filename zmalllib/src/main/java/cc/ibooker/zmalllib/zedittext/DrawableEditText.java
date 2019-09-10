@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib.zedittext;
+package cc.ibooker.zedittextlib;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

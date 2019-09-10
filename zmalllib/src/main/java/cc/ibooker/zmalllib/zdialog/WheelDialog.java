@@ -2,7 +2,9 @@ package cc.ibooker.zmalllib.zdialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.view.ViewPager;
@@ -19,8 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import cc.ibooker.zmalllib.R;
-import cc.ibooker.zmalllib.zdialog.bean.WheelDialogBean;
+import cc.ibooker.zdialoglib.bean.WheelDialogBean;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -29,6 +30,7 @@ import static android.view.View.VISIBLE;
  * 查看图片Dialog
  *
  * @author 邹峰立
+ * https://github.com/zrunker/ZDialog
  */
 public class WheelDialog {
     private Context context;
@@ -38,9 +40,10 @@ public class WheelDialog {
     private LinearLayout dotLayout;
     private TextView textView;
     private ArrayList<WheelDialogBean> mDatas;
-    private int selectedRes, defalutRes;
+    private int selectedRes, defaultRes;
     private ImageView[] mImageViews;
     private boolean isIndicatorVisible = true;// 标记指示器是否可见
+    private boolean updatePageLock = false;
 
     public enum PageIndicatorAlign {
         ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
@@ -52,6 +55,10 @@ public class WheelDialog {
         GRAVITY_RIGHT,
         GRAVITY_TOP,
         GRAVITY_BOTTOM
+    }
+
+    public Dialog getDialog() {
+        return dialog;
     }
 
     public LinearLayout getDotLayout() {
@@ -70,8 +77,12 @@ public class WheelDialog {
         this.textView = textView;
     }
 
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
+
     public WheelDialog(@NonNull Context context) {
-        this(context, R.style.translucentDialog);
+        this(context, R.style.zdialog_translucentDialog);
     }
 
     public WheelDialog(@NonNull Context context, @StyleRes int themeResId) {
@@ -82,7 +93,7 @@ public class WheelDialog {
 
     // 初始化
     private void init() {
-        dialog.setContentView(R.layout.layout_wheel_dialog);
+        dialog.setContentView(R.layout.zdialog_layout_wheel_dialog);
 
         viewPager = dialog.findViewById(R.id.viewPager);
         dotLayout = dialog.findViewById(R.id.dotLayout);
@@ -97,7 +108,7 @@ public class WheelDialog {
     }
 
     // 设置数据
-    public WheelDialog setDatas(final ArrayList<WheelDialogBean> datas) {
+    public WheelDialog setDatas(final ArrayList<WheelDialogBean> datas, String currentUrl) {
         if (datas != null && datas.size() > 0) {
             mDatas = datas;
             textView.setText(datas.get(0).getName());
@@ -110,17 +121,7 @@ public class WheelDialog {
 
                 @Override
                 public void onPageSelected(int position) {
-                    if (isIndicatorVisible && datas.size() > position && position >= 0) {
-                        textView.setText(datas.get(position).getName());
-                        if (mImageViews != null) {
-                            for (int i = 0; i < mImageViews.length; i++) {
-                                mImageViews[position].setBackgroundResource(selectedRes);
-                                if (position != i) {
-                                    mImageViews[i].setBackgroundResource(defalutRes);
-                                }
-                            }
-                        }
-                    }
+                    updatePage(position);
                 }
 
                 @Override
@@ -131,9 +132,43 @@ public class WheelDialog {
             // 初始化viewPager
             setWheelPagerAdapter(datas);
             // 初始化dotLayout
-            setPageIndicator(R.drawable.bg_dot_cccccc_8, R.drawable.bg_dot_3e3e3e_8);
+            setPageIndicator(R.drawable.zdialog_bg_dot_cccccc_8, R.drawable.zdialog_bg_dot_3e3e3e_8);
+            // 设置缓存
+            viewPager.setOffscreenPageLimit(datas.size());
+            // 设置当前页
+            if (!TextUtils.isEmpty(currentUrl)) {
+                int realPosition = 0;
+                for (int i = 0; i < datas.size(); i++) {
+                    WheelDialogBean data = datas.get(i);
+                    if (currentUrl.equals(data.getUrl())) {
+                        realPosition = i;
+                        break;
+                    }
+                }
+                viewPager.setCurrentItem(realPosition);
+                updatePage(realPosition);
+            }
         }
         return this;
+    }
+
+    // 切换页面更改
+    private void updatePage(int position) {
+        if (!updatePageLock) {
+            updatePageLock = true;
+            if (mDatas.size() > position && position >= 0) {
+                textView.setText(mDatas.get(position).getName());
+                if (mImageViews != null && isIndicatorVisible) {
+                    for (int i = 0; i < mImageViews.length; i++) {
+                        mImageViews[position].setBackgroundResource(selectedRes);
+                        if (position != i) {
+                            mImageViews[i].setBackgroundResource(defaultRes);
+                        }
+                    }
+                }
+            }
+            updatePageLock = false;
+        }
     }
 
     // 自定义setPicPagerAdapter
@@ -150,11 +185,11 @@ public class WheelDialog {
      * 底部指示器资源图片
      *
      * @param selectedRes 选中图标地址
-     * @param defalutRes  未选中图标地址
+     * @param defaultRes  未选中图标地址
      */
-    public WheelDialog setPageIndicator(int selectedRes, int defalutRes) {
+    public WheelDialog setPageIndicator(int selectedRes, int defaultRes) {
         this.selectedRes = selectedRes;
-        this.defalutRes = defalutRes;
+        this.defaultRes = defaultRes;
         if (mDatas != null && mDatas.size() > 0) {
             dotLayout.removeAllViews();
             mImageViews = new ImageView[mDatas.size()];
@@ -170,7 +205,7 @@ public class WheelDialog {
                 if (k == 0) {// 选中
                     mImageViews[k].setBackgroundResource(selectedRes);
                 } else {// 未选中
-                    mImageViews[k].setBackgroundResource(defalutRes);
+                    mImageViews[k].setBackgroundResource(defaultRes);
                 }
                 dotLayout.addView(mImageViews[k]);
             }
@@ -230,6 +265,23 @@ public class WheelDialog {
     }
 
     /**
+     * 设置Dialog高度
+     *
+     * @param proportion 和屏幕的高度比(10代表10%) 0~100
+     */
+    public WheelDialog setWheelDialogHeight(int proportion) {
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.height = getScreenH(context) * proportion / 100;
+                window.setAttributes(lp);
+            }
+        }
+        return this;
+    }
+
+    /**
      * 按返回键是否取消
      *
      * @param cancelable true 取消 false 不取消  默认true
@@ -237,6 +289,17 @@ public class WheelDialog {
     public WheelDialog setCancelable(boolean cancelable) {
         if (dialog != null)
             dialog.setCancelable(cancelable);
+        return this;
+    }
+
+    /**
+     * 设置取消事件
+     *
+     * @param onCancelListener 取消事件
+     */
+    public WheelDialog setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        if (dialog != null)
+            dialog.setOnCancelListener(onCancelListener);
         return this;
     }
 
@@ -307,7 +370,7 @@ public class WheelDialog {
     }
 
     /**
-     * 修改游标整体Padding - px
+     * 修改游标指示器整体Padding - px
      */
     public WheelDialog setDotLayoutPadding(int left, int top, int right, int bottom) {
         if (dotLayout != null) {
@@ -317,7 +380,7 @@ public class WheelDialog {
     }
 
     /**
-     * 修改游标整体Margin - px
+     * 修改游标指示器整体Margin - px
      */
     public WheelDialog setDotLayoutMargin(int leftMargin, int topMargin, int rightMargin, int bottomMargin) {
         if (dotLayout != null) {
@@ -373,15 +436,103 @@ public class WheelDialog {
      *
      * @param color 字体颜色 16进制
      */
-    public WheelDialog setTextViewColorColor(String color) {
-        try {
-            if (textView != null && !TextUtils.isEmpty(color)) {
-                textView.setTextColor(Color.parseColor(color));
-                textView.invalidate();
+    public WheelDialog setTextViewColor(String color) {
+        if (!TextUtils.isEmpty(color))
+            try {
+                if (textView != null && !TextUtils.isEmpty(color)) {
+                    textView.setTextColor(Color.parseColor(color));
+                    textView.invalidate();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return this;
+    }
+
+    /**
+     * 设置ViewPager子控件图片背景颜色
+     */
+    public WheelDialog setVpImageViewBackGroudColor(String vpImageViewBackGroudColor) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpImageViewBackGroudColor(vpImageViewBackGroudColor);
+        return this;
+    }
+
+    public WheelDialog setVpImageViewBackGroudRes(int vpImageViewBackGroudRes) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpImageViewBackGroudRes(vpImageViewBackGroudRes);
+        return this;
+    }
+
+    public WheelDialog setVpImageViewBackGroudDrawable(Drawable vpImageViewBackGroudDrawable) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpImageViewBackGroudDrawable(vpImageViewBackGroudDrawable);
+        return this;
+    }
+
+    /**
+     * 设置ViewPager子控件背景颜色
+     */
+    public WheelDialog setVpItemViewBackGroudColor(String vpItemViewBackGroudColor) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpItemViewBackGroudColor(vpItemViewBackGroudColor);
+        return this;
+    }
+
+    public WheelDialog setVpItemViewBackGroudRes(int vpItemViewBackGroudRes) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpItemViewBackGroudRes(vpItemViewBackGroudRes);
+        return this;
+    }
+
+    public WheelDialog setVpItemViewBackGroudDrawable(Drawable vpItemViewBackGroudDrawable) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpItemViewBackGroudDrawable(vpItemViewBackGroudDrawable);
+        return this;
+    }
+
+    /**
+     * 设置ViewPager子控件大小
+     */
+    public WheelDialog setVpImageViewSize(int width, int height) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setVpImageViewSize(width, height);
+        return this;
+    }
+
+    /**
+     * 设置轮播点击监听
+     */
+    public WheelDialog setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemClickListener(onItemClickListener);
+        return this;
+    }
+
+    /**
+     * 设置轮播长按事件监听
+     */
+    public WheelDialog setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemLongClickListener(onItemLongClickListener);
+        return this;
+    }
+
+    /**
+     * 设置轮播图片点击事件
+     */
+    public WheelDialog setOnItemImageClickListener(OnItemImageClickListener onItemImageClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemImageClickListener(onItemImageClickListener);
+        return this;
+    }
+
+    /**
+     * 设置轮播图片长按事件
+     */
+    public WheelDialog setOnItemImageLongClickListener(OnItemImageLongClickListener onItemImageLongClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemImageLongClickListener(onItemImageLongClickListener);
         return this;
     }
 
@@ -407,6 +558,18 @@ public class WheelDialog {
     private int getScreenW(Context aty) {
         DisplayMetrics dm = aty.getResources().getDisplayMetrics();
         return dm.widthPixels;
+    }
+
+    /**
+     * 获取屏幕的高度
+     */
+    private int getScreenH(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+        }
+        return outMetrics.heightPixels;
     }
 
 }

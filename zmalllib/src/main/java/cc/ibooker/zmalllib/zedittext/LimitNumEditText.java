@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib.zedittext;
+package cc.ibooker.zedittextlib;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,8 +14,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import cc.ibooker.zmalllib.R;
-
 /**
  * 限制字数，显示已输入字数和限制输入字数
  * Created by 邹峰立 on 2017/7/17.
@@ -24,7 +22,7 @@ public class LimitNumEditText extends LinearLayout {
     private Context context;
     private EditText editText;
     private TextView textView;
-    private LayoutParams layoutParams;
+    private LinearLayout.LayoutParams layoutParams;
     private int maxWordsNum = 0;// 默认为0
 
     public LimitNumEditText(Context context) {
@@ -43,7 +41,7 @@ public class LimitNumEditText extends LinearLayout {
 
     // 初始化
     private void init() {
-        layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         this.setOrientation(LinearLayout.VERTICAL);
         this.setBackgroundResource(R.drawable.bg_limitnum_edittext);

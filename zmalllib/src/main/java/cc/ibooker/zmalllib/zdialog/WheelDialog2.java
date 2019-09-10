@@ -2,6 +2,7 @@ package cc.ibooker.zmalllib.zdialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.view.ViewPager;
@@ -15,8 +16,6 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
-import cc.ibooker.zmalllib.R;
-
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -24,6 +23,7 @@ import static android.view.View.VISIBLE;
  * 查看图片Dialog
  *
  * @author 邹峰立
+ * https://github.com/zrunker/ZDialog
  */
 public class WheelDialog2<T> {
     private Context context;
@@ -32,7 +32,7 @@ public class WheelDialog2<T> {
     private WheelPagerAdapter2<T> wheelPagerAdapter;
     private LinearLayout dotLayout;
     private List<T> mDatas;
-    private int selectedRes, defalutRes;
+    private int selectedRes, defaultRes;
     private ImageView[] mImageViews;
     private boolean isIndicatorVisible = true;// 标记指示器是否可见
 
@@ -48,6 +48,10 @@ public class WheelDialog2<T> {
         GRAVITY_BOTTOM
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
     public LinearLayout getDotLayout() {
         return dotLayout;
     }
@@ -57,7 +61,7 @@ public class WheelDialog2<T> {
     }
 
     public WheelDialog2(@NonNull Context context) {
-        this(context, R.style.translucentDialog);
+        this(context, R.style.zdialog_translucentDialog);
     }
 
     public WheelDialog2(@NonNull Context context, @StyleRes int themeResId) {
@@ -68,7 +72,7 @@ public class WheelDialog2<T> {
 
     // 初始化
     private void initView() {
-        dialog.setContentView(R.layout.layout_wheel_dialog2);
+        dialog.setContentView(R.layout.zdialog_layout_wheel_dialog2);
 
         viewPager = dialog.findViewById(R.id.viewPager);
         dotLayout = dialog.findViewById(R.id.dotLayout);
@@ -84,10 +88,11 @@ public class WheelDialog2<T> {
     /**
      * ViewPager设置Adapter，初始化数据
      *
-     * @param holderCreator ViewHolder构造类
-     * @param datas         数据源
+     * @param holderCreator   ViewHolder构造类
+     * @param datas           数据源
+     * @param currentPosition 当前页 默认0
      */
-    public WheelDialog2 init(HolderCreator holderCreator, final List<T> datas) {
+    public WheelDialog2 init(HolderCreator holderCreator, final List<T> datas, int currentPosition) {
         this.mDatas = datas;
         // 设置Adapter
         if (wheelPagerAdapter == null) {
@@ -111,7 +116,7 @@ public class WheelDialog2<T> {
                         for (int i = 0; i < mImageViews.length; i++) {
                             mImageViews[position].setBackgroundResource(selectedRes);
                             if (position != i) {
-                                mImageViews[i].setBackgroundResource(defalutRes);
+                                mImageViews[i].setBackgroundResource(defaultRes);
                             }
                         }
                     }
@@ -124,7 +129,10 @@ public class WheelDialog2<T> {
             }
         });
         // 初始化dotLayout
-        setPageIndicator(R.drawable.bg_dot_cccccc_8, R.drawable.bg_dot_3e3e3e_8);
+        setPageIndicator(R.drawable.zdialog_bg_dot_cccccc_8, R.drawable.zdialog_bg_dot_3e3e3e_8);
+        // 设置当前页
+        if (currentPosition > 0 && currentPosition < datas.size())
+            viewPager.setCurrentItem(currentPosition);
         return this;
     }
 
@@ -132,11 +140,11 @@ public class WheelDialog2<T> {
      * 底部指示器资源图片
      *
      * @param selectedRes 选中图标地址
-     * @param defalutRes  未选中图标地址
+     * @param defaultRes  未选中图标地址
      */
-    public WheelDialog2 setPageIndicator(int selectedRes, int defalutRes) {
+    public WheelDialog2 setPageIndicator(int selectedRes, int defaultRes) {
         this.selectedRes = selectedRes;
-        this.defalutRes = defalutRes;
+        this.defaultRes = defaultRes;
         if (mDatas != null && mDatas.size() > 0) {
             dotLayout.removeAllViews();
             mImageViews = new ImageView[mDatas.size()];
@@ -152,7 +160,7 @@ public class WheelDialog2<T> {
                 if (k == 0) {// 选中
                     mImageViews[k].setBackgroundResource(selectedRes);
                 } else {// 未选中
-                    mImageViews[k].setBackgroundResource(defalutRes);
+                    mImageViews[k].setBackgroundResource(defaultRes);
                 }
                 dotLayout.addView(mImageViews[k]);
             }
@@ -205,6 +213,23 @@ public class WheelDialog2<T> {
             if (window != null) {
                 WindowManager.LayoutParams lp = window.getAttributes();
                 lp.width = getScreenW(context) * proportion / 100;
+                window.setAttributes(lp);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 设置Dialog高度
+     *
+     * @param proportion 和屏幕的高度比(10代表10%) 0~100
+     */
+    public WheelDialog2 setWheelDialogHeight(int proportion) {
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.height = getScreenH(context) * proportion / 100;
                 window.setAttributes(lp);
             }
         }
@@ -289,7 +314,18 @@ public class WheelDialog2<T> {
     }
 
     /**
-     * 修改游标整体Padding - px
+     * 设置取消事件
+     *
+     * @param onCancelListener 取消事件
+     */
+    public WheelDialog2 setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        if (dialog != null)
+            dialog.setOnCancelListener(onCancelListener);
+        return this;
+    }
+
+    /**
+     * 修改游标指示器整体Padding - px
      */
     public WheelDialog2 setDotLayoutPadding(int left, int top, int right, int bottom) {
         if (dotLayout != null) {
@@ -299,7 +335,7 @@ public class WheelDialog2<T> {
     }
 
     /**
-     * 修改游标整体Margin - px
+     * 修改游标指示器整体Margin - px
      */
     public WheelDialog2 setDotLayoutMargin(int leftMargin, int topMargin, int rightMargin, int bottomMargin) {
         if (dotLayout != null) {
@@ -310,6 +346,24 @@ public class WheelDialog2<T> {
             layoutParams.bottomMargin = bottomMargin;
             dotLayout.invalidate();
         }
+        return this;
+    }
+
+    /**
+     * 设置轮播点击监听
+     */
+    public WheelDialog2 setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemClickListener(onItemClickListener);
+        return this;
+    }
+
+    /**
+     * 设置轮播长按事件监听
+     */
+    public WheelDialog2 setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        if (wheelPagerAdapter != null)
+            wheelPagerAdapter.setOnItemLongClickListener(onItemLongClickListener);
         return this;
     }
 
@@ -335,6 +389,18 @@ public class WheelDialog2<T> {
     private int getScreenW(Context aty) {
         DisplayMetrics dm = aty.getResources().getDisplayMetrics();
         return dm.widthPixels;
+    }
+
+    /**
+     * 获取屏幕的高度
+     */
+    private int getScreenH(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+        }
+        return outMetrics.heightPixels;
     }
 
 }

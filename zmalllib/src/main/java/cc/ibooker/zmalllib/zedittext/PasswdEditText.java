@@ -1,4 +1,4 @@
-package cc.ibooker.zmalllib.zedittext;
+package cc.ibooker.zedittextlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,8 +8,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
-import cc.ibooker.zmalllib.R;
 
 /**
  * 自定义密码输入框，实现DrawableRight隐藏和显示密码
@@ -100,7 +98,7 @@ public class PasswdEditText extends android.support.v7.widget.AppCompatEditText 
                     setmDrawableRight(isOpen);
                     // 执行点击事件-隐藏或显示
                     if (isOpen)
-                        setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     else
                         setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     // 设置光标位置

@@ -11,11 +11,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import cc.ibooker.zmalllib.R;
-
 /**
  * 自定义Dialog
  * Created by 邹峰立 on 2017/7/6.
+ * https://github.com/zrunker/ZDialog
  */
 public class DiyDialog {
     private Context context;
@@ -34,7 +33,7 @@ public class DiyDialog {
     }
 
     public DiyDialog(@NonNull Context context, @NonNull View view) {
-        this(context, R.style.diydialog, view);
+        this(context, R.style.zdialog_diyDialog, view);
     }
 
     public DiyDialog(@NonNull Context context, @StyleRes int themeResId, @NonNull View view) {

@@ -1,8 +1,12 @@
 package cc.ibooker.zmalllib.zdialog;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.util.DisplayMetrics;
@@ -11,11 +15,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
-import cc.ibooker.zmalllib.R;
-
 /**
  * 自定义进度条Dialog
  * Created by 邹峰立 on 2017/7/5.
+ * https://github.com/zrunker/ZDialog
  */
 public class ProgressDialog {
     private Context context;
@@ -39,7 +42,7 @@ public class ProgressDialog {
     }
 
     public ProgressDialog(@NonNull Context context) {
-        this(context, R.style.proDialog);
+        this(context, R.style.zdialog_proDialog);
     }
 
     public ProgressDialog(@NonNull Context context, @StyleRes int themeResId) {
@@ -52,7 +55,7 @@ public class ProgressDialog {
      * 初始化控件
      */
     private void init() {
-        dialog.setContentView(R.layout.layout_progress_dialog2);
+        dialog.setContentView(R.layout.zdialog_layout_progress_dialog2);
         progressBar = dialog.findViewById(R.id.dialog_progress);
         // 按返回键是否取消
         dialog.setCancelable(true);
@@ -145,7 +148,7 @@ public class ProgressDialog {
      *
      * @param proportion 和屏幕的宽度比(10代表10%) 0~100
      */
-    public ProgressDialog setDelDialogWidth(int proportion) {
+    public ProgressDialog setProDialogWidth(int proportion) {
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) {
@@ -225,4 +228,19 @@ public class ProgressDialog {
             dialog.cancel();
     }
 
+    /**
+     * 设置进度条颜色
+     *
+     * @param colorRes 颜色资源文件
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public ProgressDialog setProgressColor(int colorRes) {
+        if (colorRes != 0) {
+            int color = context.getResources().getColor(colorRes);
+            ColorStateList colorStateList = ColorStateList.valueOf(color);
+            progressBar.setIndeterminateTintList(colorStateList);
+            progressBar.setIndeterminateTintMode(PorterDuff.Mode.SRC_ATOP);
+        }
+        return this;
+    }
 }
