@@ -23,7 +23,9 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
-import cc.ibooker.zdialoglib.bean.WheelDialogBean;
+import cc.ibooker.zmalllib.R;
+import cc.ibooker.zmalllib.zdialog.bean.WheelDialogBean;
+
 
 /**
  * 轮播适配器

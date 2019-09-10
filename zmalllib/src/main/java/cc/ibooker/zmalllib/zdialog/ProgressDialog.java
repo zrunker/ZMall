@@ -15,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 自定义进度条Dialog
  * Created by 邹峰立 on 2017/7/5.

@@ -1,4 +1,4 @@
-package cc.ibooker.zedittextlib;
+package cc.ibooker.zmalllib.zedittext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import cc.ibooker.zmalllib.R;
+import cc.ibooker.zmalllib.zedittext.ClearEditText;
 
 /**
  * 带有清空按钮的密码输入框

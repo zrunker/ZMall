@@ -1,4 +1,4 @@
-package cc.ibooker.zedittextlib;
+package cc.ibooker.zmalllib.zedittext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,8 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import cc.ibooker.zmalllib.R;
 
 /**
  * 带清空功能的EditText-DrawableRight，监听焦点和输入值改变状态

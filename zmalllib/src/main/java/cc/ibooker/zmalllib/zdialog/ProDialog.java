@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 自定义进度条Dialog
  * Created by 邹峰立 on 2017/7/5.

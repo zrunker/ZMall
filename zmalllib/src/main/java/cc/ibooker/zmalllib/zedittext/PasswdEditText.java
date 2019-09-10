@@ -1,4 +1,4 @@
-package cc.ibooker.zedittextlib;
+package cc.ibooker.zmalllib.zedittext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import cc.ibooker.zmalllib.R;
 
 /**
  * 自定义密码输入框，实现DrawableRight隐藏和显示密码

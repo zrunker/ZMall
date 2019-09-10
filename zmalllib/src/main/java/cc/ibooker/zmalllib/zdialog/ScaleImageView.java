@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 自定义可以缩放的ImageView
  *

@@ -15,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 删除Dialog
  * Created by 邹峰立 on 2017/7/5.

@@ -1,4 +1,4 @@
-package cc.ibooker.zedittextlib;
+package cc.ibooker.zmalllib.zedittext;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import cc.ibooker.zmalllib.R;
 
 /**
  * 限制字数，显示已输入字数和限制输入字数

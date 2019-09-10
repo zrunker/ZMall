@@ -17,4 +17,7 @@
         <attr name="eyeDistanceRight" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="ScaleImageView">
+        <attr name="isLimitSize" format="boolean" />
+    </declare-styleable>
 </resources>

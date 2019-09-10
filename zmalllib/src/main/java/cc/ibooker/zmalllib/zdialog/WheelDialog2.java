@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
+import cc.ibooker.zmalllib.R;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 

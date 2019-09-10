@@ -21,6 +21,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 选择图片Dialog
  * Created by 邹峰立 on 2017/7/10.

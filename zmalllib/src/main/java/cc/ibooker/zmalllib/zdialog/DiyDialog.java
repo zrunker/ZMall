@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 自定义Dialog
  * Created by 邹峰立 on 2017/7/6.

@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import cc.ibooker.zmalllib.R;
+
 /**
  * 提示Dialog
  * Created by 邹峰立 on 2017/7/5.

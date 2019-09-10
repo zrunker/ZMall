@@ -19,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 
-import cc.ibooker.zdialoglib.bean.WheelDialogBean;
+import cc.ibooker.zmalllib.R;
+import cc.ibooker.zmalllib.zdialog.bean.WheelDialogBean;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
